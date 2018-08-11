@@ -1,0 +1,500 @@
+<style>
+
+body {
+    font-family: sans-serif;
+}
+
+.tooltip {
+  display: block !important;
+  z-index: 10000;
+}
+
+.tooltip .tooltip-inner {
+  background: #333;
+  color: white;
+  font-size: 12px;
+  border-radius: 16px;
+  padding: 5px 10px 4px;
+}
+
+.tooltip .tooltip-arrow {
+  width: 0;
+  height: 0;
+  border-style: solid;
+  position: absolute;
+  margin: 5px;
+  border-color: black;
+}
+
+.tooltip[x-placement^="top"] {
+  margin-bottom: 5px;
+}
+
+.tooltip[x-placement^="top"] .tooltip-arrow {
+  border-width: 5px 5px 0 5px;
+  border-left-color: transparent !important;
+  border-right-color: transparent !important;
+  border-bottom-color: transparent !important;
+  bottom: -5px;
+  left: calc(50% - 5px);
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.tooltip[x-placement^="bottom"] {
+  margin-top: 5px;
+}
+
+.tooltip[x-placement^="bottom"] .tooltip-arrow {
+  border-width: 0 5px 5px 5px;
+  border-left-color: transparent !important;
+  border-right-color: transparent !important;
+  border-top-color: transparent !important;
+  top: -5px;
+  left: calc(50% - 5px);
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.tooltip[x-placement^="right"] {
+  margin-left: 5px;
+}
+
+.tooltip[x-placement^="right"] .tooltip-arrow {
+  border-width: 5px 5px 5px 0;
+  border-left-color: transparent !important;
+  border-top-color: transparent !important;
+  border-bottom-color: transparent !important;
+  left: -5px;
+  top: calc(50% - 5px);
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.tooltip[x-placement^="left"] {
+  margin-right: 5px;
+}
+
+.tooltip[x-placement^="left"] .tooltip-arrow {
+  border-width: 5px 0 5px 5px;
+  border-top-color: transparent !important;
+  border-right-color: transparent !important;
+  border-bottom-color: transparent !important;
+  right: -5px;
+  top: calc(50% - 5px);
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.tooltip[aria-hidden='true'] {
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity .15s, visibility .15s;
+}
+
+.tooltip[aria-hidden='false'] {
+  visibility: visible;
+  opacity: 1;
+  transition: opacity .15s;
+}
+
+.jbo {
+  padding: 3px 5px;
+  color: white;
+  border-radius: 2px;
+  font-style: italic;
+  flex: none;
+  height: 20px;
+  margin: left;
+  margin: 2px;
+}
+
+.translation {
+  color: #008E00;
+  padding: 3px 0px;
+}
+
+.velsi-label {
+  font-weight: bold;
+  font-style: italic;
+}
+
+.cmavo {
+  background: #D91212;
+}
+
+.cmavo-label {
+  color: #D91212;
+}
+
+.gismu {
+  background: #1255D9;
+}
+
+.gismu-label {
+  color: #1255D9;
+}
+
+.rafsi {
+  background: #9112D9;
+}
+
+.rafsi-label {
+  color: #9112D9;
+}
+
+.lujvo {
+  background: #12CBD9;
+}
+
+.lujvo-label {
+  color: #12CBD9;
+}
+
+.sumti, .selbri {
+  display: flex;
+  flex-direction: column;
+}
+.sumti-content {
+  display: flex;
+  flex-direction: row;
+}
+.sumti .sumti-label, .selbri-label {
+  border-top: 2px solid #CCC;
+  padding-top: 3px;
+  color: black;
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 10px;
+  margin: 3px 2px 0px 2px;
+}
+
+.selbri-label {
+  border-top: 2px solid black;
+}
+
+.bridi {
+  display: flex;
+  background: #eee;
+  padding: 30px;
+  border: #ccc 1px solid;
+  border-radius: 5px;
+  flex-direction: row;
+  align-items: baseline;
+}
+
+.girzu {
+  display: flex;
+  flex-direction: column;
+}
+
+.girzu-content {
+  display: flex;
+  flex-direction: row;
+}
+
+.girzu-label {
+  border-bottom: 2px solid #CCC;
+  padding-bottom: 3px;
+  color: black;
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 10px;
+  margin: 0px 2px 2px 2px;
+}
+
+</style>
+
+
+<script src="https://unpkg.com/popper.js"></script>
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<script src="https://unpkg.com/v-tooltip"></script>
+
+<script type="text/x-template" id="word-template">
+    <span v-if="model.children" :class="model.type"> 
+        <span :class="model.type + '-content'"><word v-for="(model, index) in model.children" :key="index" :model="model"></word></span>
+        <span :class="model.type+'-label'">{{ model.text }}</span>
+    </span>
+    <span v-else class="jbo" :class="model.type" v-tooltip="tooltip">{{ model.text }}</span>
+</script>
+
+<script type="text/x-template" id="girzu-template">
+  <span class="girzu">
+    <span class="girzu-label">{{ type }}</span>
+    <span class="girzu-content"><slot /></span>
+  </span>
+</script>
+
+<script type="text/x-template" id="bridi-template">
+    <div class="bridi"><slot /></div>
+</script>
+
+<script type="text/x-template" id="translation-template">
+    <span class="translation"><slot /></span>
+</script>
+
+<script type="text/x-template" id="label-template">
+    <span class="velsi-label" :class="this.$slots.default[0].text+'-label'"><slot /></span>
+</script>
+
+<script type="text/x-template" id="valsi-template">
+    <span v-if="sumti" class="sumti">
+      <span class="sumti-content"><span class="jbo" :class="type" v-tooltip="tooltip">{{ text }}</span></span>
+      <span class="sumti-label" v-tooltip.bottom="'sumti'">{{ sumti }}</span>
+    </span>
+    <span v-else class="jbo" :class="type" v-tooltip="tooltip">{{ text }}</span>
+</script>
+
+<script type="text/x-template" id="gismu-template">
+    <span v-if="selbri" class="selbri"><span class="jbo gismu" v-tooltip="tooltip"><slot /></span><span class="selbri-label">selbri</span></span>
+    <span v-else class="jbo gismu" v-tooltip="tooltip"><slot /></span>
+</script>
+
+<script type="text/x-template" id="sumti-template">
+    <span class="sumti">
+      <span class="sumti-content"><slot /></span>
+      <span class="sumti-label" v-tooltip.bottom="'sumti'">{{ arg }}</span>
+    </span>
+</script>
+
+<div id="app">
+  <br /><br /><br />
+  <p>
+    <bridi>
+      <cmavo>.i</cmavo>
+      <cmavo>xu</cmavo>
+      <sumti arg="x1">
+        <cmavo>do</cmavo>
+      </sumti>
+      <gismu selbri="true">melbi</gismu>
+      <sumti arg="x2">
+        <cmavo>le</cmavo>
+        <gismu>vecnu</gismu>
+      </sumti>
+    </bridi>
+  </p>
+  <p>all <v-name>gismu</v-name>, some <v-name>cmavo</v-name> and <v-name>fu'ivla</v-name> have at least one <v-name>rafsi</v-name></p>
+  <p><gismu>tavla</gismu> <rafsi>tav</rafsi> <rafsi>ta'a</rafsi> <tran>talk</tran></p>
+  <p><gismu>bandu</gismu> <rafsi>ban</rafsi> <rafsi>bau</rafsi> <tran>language</tran></p>
+  <p>combine <v-name>rafsi</v-name> to form <v-name>lujvo</v-name></p>
+  <p>
+    <lujvo>banta'a</lujvo> = <rafsi>ban</rafsi> + <rafsi>ta'a</rafsi><br />
+    <tran>speak a language</tran>
+  </p>
+  <p>
+  <bridi>
+   <cmavo>.i</cmavo> 
+   <sumti arg="x1">
+    <cmavo>lo</cmavo>
+    <girzu type="fasnu">
+      <cmavo>nu</cmavo>
+      <cmavo sumti="x1">do</cmavo>
+      <gismu selbri="true">djica</gismu>
+      <sumti arg="x2">
+        <cmavo>lo</cmavo>
+        <girzu type="fasnu">
+          <cmavo>nu</cmavo>
+          <cmavo sumti="x1">do</cmavo>  
+          <gismu selbri="true">sidju</gismu>
+          <cmavo sumti="x2">mi</cmavo>
+          <sumti arg="x3">
+            <cmavo>lo</cmavo>
+            <cmavo>te</cmavo>
+            <gismu>jukpa</gismu>
+          </sumti>
+        </girzu>
+      </sumti>
+    </girzu>
+    </sumti>
+    <cmavo>cu</cmavo>
+    <gismu selbri="true">zabna</gismu>
+  </bridi>
+  </p>
+  <p>
+    <!--word :model="bridi"></word-->
+  </p>
+</div>
+
+
+<script>
+// var dictionary = {
+//   "do": "you",
+//   "mi": "me/i",
+//   "melbi": "x1 is beautiful to x2 by x3 standard",
+//   "le": "a",
+//   "vecnu": "x1 sells x2 to x3",
+//   "xu": "yes/no question, emphasises last word",
+//   "i": "start of a sentence"
+// };
+
+var dictionary = { "": "" };
+
+Vue.component('bridi', {
+  template: '#bridi-template'
+});
+
+Vue.component('tran', {
+  template: '#translation-template'
+});
+
+Vue.component('v-name', {
+  template: '#label-template'
+});
+
+Vue.component('girzu', {
+  template: '#girzu-template',
+  props: ['type']
+});
+
+valsi = Vue.component('valsi', {
+  template: '#valsi-template',
+  props: ['type', 'sumti'],
+  computed: {
+    tooltip: function () {
+      return { content: dictionary[this.$slots.default[0].text.replace(/^(\.)/,"")].definition };
+    },
+    text: function() {
+      return this.$slots.default[0].text;
+    }
+  }
+});
+
+Vue.component('cmavo', {
+  extends: valsi,
+  props: {
+    type: {
+     default: 'cmavo',
+     type: String
+    }
+  },
+});
+
+Vue.component('lujvo', {
+  extends: valsi,
+  props: {
+    type: {
+     default: 'lujvo',
+     type: String
+    }
+  },
+});
+
+Vue.component('gismu', {
+  template: '#gismu-template',
+  props: ['selbri'],
+  computed: {
+    tooltip: function () {
+        return { content: dictionary[this.$slots.default[0].text].definition };
+    }
+  }
+});
+
+Vue.component('rafsi', {
+  extends: valsi,
+  props: {
+    type: {
+     default: 'rafsi',
+     type: String
+    }
+  },
+});
+
+Vue.component('sumti', {
+  template: '#sumti-template',
+  props: ['arg']
+});
+
+Vue.component('word', {
+  template: '#word-template',
+  props: {
+    model: Object
+  },
+  data: function () {
+    return {
+      open: false
+    }
+  },
+  computed: {
+    isFolder: function () {
+      return this.model.children &&
+        this.model.children.length
+    },
+    tooltip: function () {
+        return { content: dictionary[this.model.text] };
+    }
+  },
+  methods: {
+    toggle: function () {
+      if (this.isFolder) {
+        this.open = !this.open
+      }
+    },
+    changeType: function () {
+      if (!this.isFolder) {
+        Vue.set(this.model, 'children', [])
+        this.addChild()
+        this.open = true
+      }
+    },
+    addChild: function () {
+      this.model.children.push({
+        name: 'new stuff'
+      })
+    }
+  }
+})
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    "bridi": {
+        "children": [
+        {
+            "text": "xu",
+            "type": "cmavo"
+        },
+        {
+            "type": "sumti",
+            "text": "x1",
+            "children": [{
+                "text": "mi",
+                "type": "cmavo"
+            }]
+        },
+        {
+            "type": "selbri",
+            "children": [{
+                "text": "melbi",
+                "type": "gismu"
+            }]
+        },
+        {
+            "type": "sumti",
+            "text": "x2",
+            "children": [{
+                "text": "do",
+                "type": "cmavo"
+            }]
+        }
+        ]
+    }
+  }
+});
+
+var request = new XMLHttpRequest();
+request.open('GET', 'dictionary.json', true);
+
+request.onload = function() {
+  if (this.status >= 200 && this.status < 400) {
+    // Success!
+    dictionary = JSON.parse(this.response);
+    app.$forceUpdate();
+  } else {
+    // We reached our target server, but it returned an error
+
+  }
+};
+
+request.send();
+
+</script>
